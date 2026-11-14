@@ -1,9 +1,10 @@
-// hero3d.js — the interactive globe in the hero.
+// hero3d.js — the interactive globe (step 1 of the scroll story in Research).
 //
 // Idea: a satellite view of a planet that starts "low-res" (blocky, blurry,
 // scattered points) and sharpens into a crisp sphere, like super-resolution.
-// Orange patches are "detected change" (a nod to the deforestation research).
+// Coloured patches are "detected change" (a nod to the deforestation research).
 // Interactions: drag to spin, move the mouse to tilt, click to re-enhance.
+// As you scroll, story.js tells the camera to fly in toward the surface.
 //
 // Three.js is loaded straight from a CDN as an ES module, so no build step.
 
@@ -27,7 +28,8 @@ function init() {
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-  camera.position.z = 3.6;
+  const BASE_Z = 2.7; // camera distance when the whole globe is in view
+  camera.position.z = BASE_Z;
 
   const globe = new THREE.Group();
   globe.rotation.x = 0.35;
@@ -241,6 +243,10 @@ function init() {
       spinVelocity += (0.12 - spinVelocity) * 0.02;
       globe.rotation.y += spinVelocity * dt;
     }
+    // story.js sets window.storyZoom (0..1) from the scroll position:
+    // 0 = the whole globe in view, 1 = flown right down to the surface.
+    camera.position.z = BASE_Z - (window.storyZoom || 0) * (BASE_Z - 1.12);
+
     globe.rotation.x += (0.35 + tiltX - globe.rotation.x) * 0.05;
     globe.rotation.z += (-tiltY * 0.3 - globe.rotation.z) * 0.05;
 

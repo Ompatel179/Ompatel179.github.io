@@ -114,7 +114,8 @@
   if (track) track.innerHTML += track.innerHTML;
 
   /* ---------- Animations ---------- */
-  const revealItems = '.card, .paper, .seg, .load, .plate, .timeline li, .skill, .more li';
+  // (.story is left out on purpose: it gets pinned while scrolling, see story.js)
+  const revealItems = '.card, .paper, .load, .plate, .timeline li, .skill, .more li';
 
   if (animate) {
     gsap.registerPlugin(ScrollTrigger);
@@ -182,6 +183,26 @@
       });
     }
 
+    // 7) McLaren F1 backdrop: the faint outline behind the page drives from
+    //    the right edge to the left edge over the full length of the page,
+    //    and its wheels turn by the amount a real wheel would over that distance.
+    const car = document.querySelector('.f1-drive svg');
+    if (car) {
+      const wholePage = { trigger: document.documentElement, start: 'top top', end: 'bottom bottom', scrub: 0.6, invalidateOnRefresh: true };
+      const carWidth = () => car.getBoundingClientRect().width;
+      gsap.fromTo(car,
+        { x: () => window.innerWidth },
+        { x: () => -carWidth(), ease: 'none', scrollTrigger: wholePage });
+      gsap.to('.f1-wheel', {
+        rotation: () => {
+          const travel = window.innerWidth + carWidth();
+          const wheelRadius = (50 / 690) * carWidth();   // wheel is ~50 of the drawing's 690 units
+          return -(travel / (2 * Math.PI * wheelRadius)) * 360;
+        },
+        transformOrigin: '50% 50%', ease: 'none', scrollTrigger: { ...wholePage },
+      });
+    }
+
     // 6) The super-resolution viewer drifts up slightly as you scroll past (parallax).
     gsap.to('.sr', {
       yPercent: -10, ease: 'none',
@@ -226,7 +247,7 @@
     });
     // Globe: big "drag" cursor. Compare viewer: keep the ring small so it
     // doesn't cover the picture you're comparing.
-    const art = document.querySelector('.hero-art');
+    const art = document.querySelector('.story-globe');
     if (art) {
       art.addEventListener('pointerenter', () => grow('drag'));
       art.addEventListener('pointerleave', shrink);

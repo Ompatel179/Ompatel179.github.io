@@ -215,23 +215,7 @@ h1 .accent { color: var(--accent-display); }
 .sr figcaption { padding: 12px 14px; border-top: 1px solid var(--border); line-height: 1.6; }
 .sr figcaption strong { color: var(--ink); font-weight: 700; }
 
-/* Globe (Research section) */
-.research-top { display: grid; grid-template-columns: 1fr 280px; gap: 24px; align-items: center; margin-bottom: 36px; }
-.research-top .section-head { margin-bottom: 0; }
-.hero-art {
-  position: relative; margin: 0 0 28px; width: 100%; max-width: 280px; aspect-ratio: 1;
-  justify-self: end; cursor: grab; border-radius: 50%;
-}
-.hero-art.grabbing { cursor: grabbing; }
-.hero-art::before {
-  content: ""; position: absolute; inset: 14%; border-radius: 50%; z-index: -1;
-  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 18%, transparent), transparent 70%);
-  filter: blur(24px);
-}
-#heroCanvas { width: 100%; height: 100%; display: block; touch-action: pan-y; }
-.hero-art figcaption { position: absolute; left: 0; right: 0; bottom: -10px; text-align: center; line-height: 1.4; }
 .c-orange { color: var(--accent-display); }
-.hero-art.no-webgl { display: none; }
 
 /* Stats: bold blocks that pop in */
 .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 56px 0 0; padding: 0; }
@@ -351,51 +335,76 @@ h2 em { font-style: normal; color: var(--accent-display); }
 .load-facts b { color: var(--ink); font-weight: 700; }
 .load-foot { line-height: 1.6; margin-top: auto; }
 
-/* Segmentation viewer (Research section). The load gauge shares its frame. */
-.seg, .load {
+/* Shared frame for the two demo panels (load gauge and scroll story). */
+.story, .load {
   margin: 28px 0 0; border: 1.5px solid var(--ink); border-radius: var(--radius);
   overflow: hidden; background: var(--surface); box-shadow: 10px 10px 0 var(--pop);
 }
-.seg-bar, .load-bar {
+.story-bar, .load-bar {
   display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px;
   padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 12px; color: var(--ink);
 }
-.seg-modes { display: flex; flex-wrap: wrap; gap: 6px; }
-.seg-modes button, .load-gears button {
+.load-gears button {
   font: 500 12px var(--mono); color: var(--ink); background: transparent; cursor: pointer;
-  border: 1px solid var(--border); border-radius: 999px; padding: 5px 12px;
+  border: 1px solid var(--border); border-radius: 999px; padding: 7px 14px;
   transition: background .2s, color .2s, border-color .2s;
 }
-.load-gears button { padding: 7px 14px; }
-.seg-modes button:hover, .load-gears button:hover { border-color: var(--ink); }
-.seg-modes button[aria-pressed="true"], .load-gears button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
-.seg-modes .seg-run { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 700; }
-.seg-modes .seg-run:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
-.seg-body { display: grid; grid-template-columns: 1fr 290px; }
-.seg-stage { position: relative; aspect-ratio: 800 / 330; align-self: center; }
-.seg-side { border-left: 1px solid var(--border); padding: 14px; display: flex; flex-direction: column; gap: 10px; }
-.seg-title { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
-.seg-note { line-height: 1.6; margin-top: auto; padding-top: 10px; border-top: 1px solid var(--border); }
-.seg-note strong { color: var(--ink); font-weight: 700; }
-.seg-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.seg-tip {
-  position: absolute; z-index: 2; pointer-events: none; white-space: nowrap;
-  background: var(--ink); color: var(--bg); font-size: 11px; font-weight: 700;
-  padding: 5px 9px; border-radius: 6px;
+.load-gears button:hover { border-color: var(--ink); }
+.load-gears button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+/* Scroll story (Research section): globe -> zoom -> forest -> change mask.
+   The panel stays pinned while you scroll through its four steps (story.js). */
+.story-body { display: grid; grid-template-columns: 1fr 320px; }
+.story-stage { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: var(--surface); }
+.story-globe { position: absolute; inset: 0; cursor: grab; }
+.story-globe.grabbing { cursor: grabbing; }
+.story-globe.no-webgl { display: none; }
+#heroCanvas { width: 100%; height: 100%; display: block; touch-action: pan-y; }
+#storyTile { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
+.story-tag {
+  position: absolute; top: 12px; left: 12px; font: 700 10px var(--mono); letter-spacing: .08em;
+  text-transform: uppercase; padding: 5px 9px; border-radius: 6px; color: var(--ink);
+  background: color-mix(in srgb, var(--bg) 88%, transparent); pointer-events: none;
 }
-.seg-legend { display: flex; flex-direction: column; gap: 6px; }
-.seg-chip {
-  display: flex; align-items: center; gap: 8px; width: 100%; text-align: left;
-  font: 500 12.5px var(--mono); color: var(--ink);
-  background: var(--chip); border: 1px solid transparent; border-radius: 10px; padding: 8px 12px;
+.story-legend {
+  position: absolute; left: 12px; bottom: 12px; display: flex; flex-wrap: wrap; gap: 8px;
+  opacity: 0; transition: opacity .3s; pointer-events: none;
 }
-.seg-chip b { margin-left: auto; }
-button.seg-chip { cursor: pointer; transition: border-color .2s, background .2s; }
-button.seg-chip:hover { border-color: var(--ink); }
-button.seg-chip[aria-pressed="true"] { border-color: var(--ink); background: var(--surface); }
-.seg-chip i { width: 10px; height: 10px; border-radius: 3px; }
-.seg-chip b { color: var(--muted); font-weight: 500; }
-.seg-chip-bg { background: transparent; border: 1px dashed var(--border); color: var(--muted); }
+.story-legend.show { opacity: 1; }
+.story-legend span {
+  display: inline-flex; align-items: center; gap: 7px; font: 700 11px var(--mono); color: var(--ink);
+  background: color-mix(in srgb, var(--bg) 90%, transparent); padding: 5px 9px; border-radius: 6px;
+}
+.story-legend i { width: 10px; height: 10px; border-radius: 3px; }
+.story-side { border-left: 1px solid var(--border); padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.story-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.story-steps button {
+  display: block; width: 100%; text-align: left; cursor: pointer; font: inherit; color: var(--muted);
+  background: transparent; border: 1px solid transparent; border-radius: 12px; padding: 9px 12px;
+  transition: background .25s, border-color .25s;
+}
+.story-steps button:hover { border-color: var(--border); }
+.story-steps strong { display: block; font: 700 15px var(--display); color: var(--muted); transition: color .25s; }
+.story-steps span { display: none; font-size: 13.5px; line-height: 1.5; margin-top: 3px; }
+/* Only the current step is expanded. */
+.story-steps li.on button { background: var(--chip); border-color: var(--ink); }
+.story-steps li.on strong { color: var(--ink); }
+.story-steps li.on span { display: block; }
+.story-note { line-height: 1.6; margin-top: auto; padding-top: 10px; border-top: 1px solid var(--border); }
+.story-note strong { color: var(--ink); font-weight: 700; }
+/* Without the scroll animation (reduced motion, or GSAP missing) show every step's text. */
+.story.is-static .story-steps span { display: block; }
+
+/* McLaren F1 backdrop: a faint outline fixed behind the page that drives
+   across the screen as you scroll (main.js moves it and turns the wheels). */
+.f1-drive {
+  position: fixed; left: 0; right: 0; bottom: 5vh; z-index: -1;
+  pointer-events: none; overflow: hidden; opacity: .11;
+}
+.f1-drive svg { display: block; width: min(1100px, 150vw); transform: translateX(18vw); }
+.f1-drive path, .f1-drive circle, .f1-drive line {
+  fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round;
+}
 
 /* ---------- Timeline ---------- */
 .timeline { list-style: none; margin: 0; padding: 0; }
@@ -552,14 +561,13 @@ button.seg-chip[aria-pressed="true"] { border-color: var(--ink); background: var
   .theme-btn { margin-left: auto; }
   .hero-grid { grid-template-columns: 1fr; }
   .sr { justify-self: center; max-width: 380px; margin-top: 24px; box-shadow: 6px 6px 0 var(--pop); }
-  .research-top { grid-template-columns: 1fr; }
-  .seg, .load { box-shadow: 6px 6px 0 var(--pop); }
+  .story, .load { box-shadow: 6px 6px 0 var(--pop); }
   .load-body { grid-template-columns: 1fr; }
   .load-dial { border-right: 0; border-bottom: 1px solid var(--border); }
   .load-note { min-height: 0; }
-  .seg-body { grid-template-columns: 1fr; }
-  .seg-side { border-left: 0; border-top: 1px solid var(--border); }
-  .hero-art { justify-self: center; max-width: 240px; }
+  .story-body { grid-template-columns: 1fr; }
+  .story-side { border-left: 0; border-top: 1px solid var(--border); }
+  .story-note { display: none; }
   .cards, .research, .more, .plates { grid-template-columns: 1fr; }
   .skills { grid-template-columns: repeat(2, 1fr); }
 }
