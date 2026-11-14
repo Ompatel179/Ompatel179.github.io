@@ -1,5 +1,0 @@
-# Search engines are welcome to index this site.
-User-agent: *
-Allow: /
-
-Sitemap: https://ompatel179.github.io/sitemap.xml
