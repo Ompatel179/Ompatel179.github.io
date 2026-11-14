@@ -143,9 +143,9 @@ function init() {
     const css = getComputedStyle(document.documentElement);
     const get = (name) => css.getPropertyValue(name).trim();
     uniforms.uBase.value.set(get('--ink'));      // black (light mode) / white (dark mode)
-    uniforms.uChange.value.set(get('--accent')); // crimson patches
+    uniforms.uChange.value.set(get('--accent-display')); // "detected change" patches
     ringMat.color.set(get('--muted'));
-    satMat.color.set(get('--accent'));
+    satMat.color.set(get('--accent-display'));
     if (reduceMotion) render();
   }
   applyTheme();

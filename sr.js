@@ -42,7 +42,7 @@
     const css = getComputedStyle(document.documentElement);
     const get = (name) => css.getPropertyValue(name).trim();
     return { bg: get('--surface'), ink: get('--ink'), grid: get('--border'),
-             muted: get('--muted'), accent: get('--accent') };
+             muted: get('--muted'), accent: get('--accent-display') };
   }
 
   // Draws the whole picture onto any canvas context at any size.

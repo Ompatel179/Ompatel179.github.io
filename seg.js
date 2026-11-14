@@ -103,7 +103,7 @@
     const dark = isDark();
     return {
       surface: get('--surface'), chip: get('--chip'), ink: get('--ink'),
-      muted: get('--muted'), border: get('--border'), accent: get('--accent'),
+      muted: get('--muted'), border: get('--border'), accent: get('--accent-display'),
       glass: dark ? '#6B7684' : '#8A95A3',
       tire: dark ? '#4A4A52' : '#1D1D20',
       rim: dark ? '#D2D2D8' : '#DADAE0',
