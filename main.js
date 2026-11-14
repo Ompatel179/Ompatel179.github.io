@@ -114,7 +114,7 @@
   if (track) track.innerHTML += track.innerHTML;
 
   /* ---------- Animations ---------- */
-  const revealItems = '.card, .paper, .timeline li, .skill, .more li';
+  const revealItems = '.card, .paper, .seg, .load, .plate, .timeline li, .skill, .more li';
 
   if (animate) {
     gsap.registerPlugin(ScrollTrigger);
@@ -129,7 +129,7 @@
       }, '-=0.4')
       .from('.lede', { y: 24, opacity: 0, duration: 0.9 }, '-=0.7')
       .from('.hero .cta > *', { y: 20, opacity: 0, stagger: 0.07, duration: 0.8, clearProps: 'transform' }, '-=0.7')
-      .from('.hero-art', { scale: 0.6, opacity: 0, rotate: -20, duration: 1.6, ease: 'expo.out' }, '-=1.3')
+      .from('.sr', { y: 60, opacity: 0, rotate: 4, duration: 1.3, ease: 'expo.out' }, '-=1.2')
       // 2) Stats pop in like they were thrown onto the page.
       .from('.stats > div', {
         y: 80, scale: 0.7, opacity: 0,
@@ -182,9 +182,9 @@
       });
     }
 
-    // 6) The globe drifts up slightly as you scroll past (parallax).
-    gsap.to('.hero-art', {
-      yPercent: -18, ease: 'none',
+    // 6) The super-resolution viewer drifts up slightly as you scroll past (parallax).
+    gsap.to('.sr', {
+      yPercent: -10, ease: 'none',
       scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
     });
   } else {
@@ -224,6 +224,8 @@
       el.addEventListener('pointerenter', () => grow(hasLink ? 'view' : 'soon'));
       el.addEventListener('pointerleave', shrink);
     });
+    // Globe: big "drag" cursor. Compare viewer: keep the ring small so it
+    // doesn't cover the picture you're comparing.
     const art = document.querySelector('.hero-art');
     if (art) {
       art.addEventListener('pointerenter', () => grow('drag'));

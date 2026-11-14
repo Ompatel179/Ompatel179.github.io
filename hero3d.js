@@ -203,7 +203,9 @@ function init() {
   });
 
   // Replays the low-res -> high-res animation.
-  let enhanceStart = reduceMotion ? -1 : performance.now() + 250;
+  // The first run starts when the globe scrolls into view (see below).
+  let enhanceStart = -1;
+  let hasPlayed = false;
   function enhance() {
     if (reduceMotion) return;
     uniforms.uProgress.value = 0;
@@ -212,8 +214,13 @@ function init() {
 
   // --- Animation loop (paused while the hero is off screen) ---
   let visible = true;
-  new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; })
-    .observe(box);
+  new IntersectionObserver(([entry]) => {
+    visible = entry.isIntersecting;
+    if (visible && !hasPlayed && !reduceMotion) {
+      hasPlayed = true;
+      enhanceStart = performance.now() + 250;
+    }
+  }, { threshold: 0.3 }).observe(box);
 
   function render() { renderer.render(scene, camera); }
 
