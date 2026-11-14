@@ -297,43 +297,56 @@
         <span class="kicker">03 / Path</span>
         <h2>Experience & education</h2>
       </div>
-      <ol class="timeline">
-        <li>
-          <span class="when">2025 – now</span>
-          <div>
-            <h3>Software Developer (part-time) · Rutgers Career Exploration and Success</h3>
-            <p>Building an internal web dashboard for employers and wrote the mentor–mentee matching algorithm. (Internal code, so it isn't public.)</p>
-          </div>
-        </li>
-        <li>
-          <span class="when">Sep 2025 – May 2027</span>
-          <div>
-            <h3>MS Computer Science · Rutgers University–New Brunswick</h3>
+      <!-- Career timeline, drawn like a git branch graph (timeline.js).
+           The entries below are plain HTML, so they still read as a list
+           without JavaScript. data-start / data-end are YYYY-MM. -->
+      <div class="tl" id="tl">
+        <div class="tl-bar mono">
+          <span><span class="c-orange">●</span> git log --graph --all --since=2021</span>
+          <span>pick a branch</span>
+        </div>
+        <div class="tl-graph" id="tlGraphBox">
+          <svg id="tlGraph" viewBox="0 0 1200 250" role="img" aria-label="Timeline from 2021 to 2027. Study runs along the main line; internships, research and the current job branch off above it."></svg>
+        </div>
+        <div class="tl-tabs" id="tlTabs" role="group" aria-label="Timeline entries"></div>
+        <ol class="tl-entries">
+          <li class="tl-entry" data-id="ces" data-kind="work" data-branch="work/rutgers-ces" data-start="2026-07" data-end="now">
+            <p class="tl-when mono">Jul 2026 – now</p>
+            <h3>Research and Assessment Coordinator <span>· Rutgers Career Exploration and Success</span></h3>
+            <p>I work on the post-graduation survey process, survey development, and data analysis and reporting for departments across the university.</p>
+            <ul>
+              <li><strong>Career fair attendance dashboard.</strong> A Python script turns the registration export into anonymous counts, and a web page charts attendance by major, school year, fair day and career interest community. Names and emails never reach the browser, and a student who attends two days is still counted once.</li>
+              <li><strong>Mentor–mentee matching.</strong> Wrote the algorithm that pairs students with mentors for a mentoring program.</li>
+            </ul>
+            <p class="tl-meta mono">Python · pandas · JavaScript · Chart.js · <a href="https://careers.rutgers.edu/people/om-nirav-patel" target="_blank" rel="noopener">staff page ↗</a></p>
+          </li>
+          <li class="tl-entry" data-id="ms" data-kind="study" data-branch="study/ms-rutgers" data-start="2025-09" data-end="2027-05">
+            <p class="tl-when mono">Sep 2025 – May 2027</p>
+            <h3>MS Computer Science <span>· Rutgers University–New Brunswick</span></h3>
             <p>Focus on machine learning and systems.</p>
-          </div>
-        </li>
-        <li>
-          <span class="when">Jan – May 2025</span>
-          <div>
-            <h3>Research Intern, Deep Learning · PDEU</h3>
-            <p>U-Nets for segmentation and change detection on satellite imagery.</p>
-          </div>
-        </li>
-        <li>
-          <span class="when">May – Jul 2024</span>
-          <div>
-            <h3>Embedded Systems Intern · Candore Bioscience</h3>
+          </li>
+          <li class="tl-entry" data-id="unet" data-kind="research" data-branch="research/unet-deforestation" data-start="2025-01" data-end="2025-05">
+            <p class="tl-when mono">Jan – May 2025</p>
+            <h3>Research Intern, Deep Learning <span>· PDEU</span></h3>
+            <p>Built U-Net, FCN-8 and a Dual-Stream U-Net for satellite segmentation and change detection. The dual-stream model reached 89% IoU detecting deforestation.</p>
+          </li>
+          <li class="tl-entry" data-id="srgan" data-kind="research" data-branch="research/srgan-paper" data-start="2024-07" data-end="2024-12">
+            <p class="tl-when mono">Jul – Dec 2024</p>
+            <h3>Research, GAN Super-Resolution <span>· PDEU</span></h3>
+            <p>Implemented SRGAN and ESRGAN to sharpen low-resolution satellite images. Published at IEEE ICETA 2025.</p>
+          </li>
+          <li class="tl-entry" data-id="candore" data-kind="work" data-branch="work/candore-intern" data-start="2024-05" data-end="2024-07">
+            <p class="tl-when mono">May – Jul 2024</p>
+            <h3>Embedded Systems Intern <span>· Candore Bioscience</span></h3>
             <p>Built temperature sensing with NTC thermistors and Pt100 RTDs (Steinhart-Hart calibration) on ESP32 and Arduino, and a cryogenic liquid-level system validated down to –23 °C.</p>
-          </div>
-        </li>
-        <li>
-          <span class="when">2021 – 2025</span>
-          <div>
-            <h3>B.Tech, Information & Communication Technology · Pandit Deendayal Energy University</h3>
+          </li>
+          <li class="tl-entry" data-id="btech" data-kind="study" data-branch="study/btech-ict" data-start="2021-06" data-end="2025-05">
+            <p class="tl-when mono">Jun 2021 – May 2025</p>
+            <h3>B.Tech, Information &amp; Communication Technology <span>· Pandit Deendayal Energy University</span></h3>
             <p>Gandhinagar, India.</p>
-          </div>
-        </li>
-      </ol>
+          </li>
+        </ol>
+      </div>
     </section>
 
     <!-- SKILLS -->
@@ -455,6 +468,7 @@
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
   <script src="sr.js"></script>
   <script src="story.js"></script>
+  <script src="timeline.js"></script>
   <script src="load.js"></script>
   <script src="plates.js"></script>
   <script src="secrets.js"></script>

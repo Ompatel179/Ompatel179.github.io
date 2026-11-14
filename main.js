@@ -115,7 +115,7 @@
 
   /* ---------- Animations ---------- */
   // (.story is left out on purpose: it gets pinned while scrolling, see story.js)
-  const revealItems = '.card, .paper, .load, .plate, .timeline li, .skill, .more li';
+  const revealItems = '.card, .paper, .load, .plate, .skill, .more li';
 
   if (animate) {
     gsap.registerPlugin(ScrollTrigger);

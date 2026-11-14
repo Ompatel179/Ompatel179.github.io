@@ -407,17 +407,62 @@ h2 em { font-style: normal; color: var(--accent-display); }
 }
 
 /* ---------- Timeline ---------- */
-.timeline { list-style: none; margin: 0; padding: 0; }
-.timeline li {
-  display: grid; grid-template-columns: 180px 1fr; gap: 24px;
-  padding: 22px 0; border-top: 1px solid var(--border); transition: padding-left .3s;
+/* Career timeline as a git branch graph (timeline.js). */
+.tl {
+  border: 1.5px solid var(--ink); border-radius: var(--radius); overflow: hidden;
+  background: var(--surface); box-shadow: 10px 10px 0 var(--pop);
 }
-.timeline li:last-child { border-bottom: 1px solid var(--border); }
-.timeline li:hover { padding-left: 12px; }
-.timeline li:hover h3 { color: var(--accent-text); }
-.when { font-family: var(--mono); font-size: 13px; color: var(--muted); padding-top: 3px; }
-.timeline h3 { font: 700 18px var(--display); transition: color .2s; }
-.timeline p { color: var(--muted); font-size: 15px; margin-top: 4px; }
+.tl-bar {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px;
+  padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 12px; color: var(--ink);
+}
+/* On small screens the graph keeps its size and scrolls sideways. */
+.tl-graph { overflow-x: auto; border-bottom: 1px solid var(--border); }
+.tl-graph svg { display: block; width: 100%; min-width: 760px; height: auto; }
+.tl-year { fill: var(--muted); font: 500 12px var(--mono); }
+.tl-grid { stroke: var(--border); stroke-width: 1; }
+.tl-lane { fill: var(--muted); font: 500 11px var(--mono); letter-spacing: .06em; }
+.tl-main { stroke: var(--border); stroke-width: 2; fill: none; }
+/* Each entry is a group: a wide invisible "hit" line makes it easy to click. */
+.tl-branch { cursor: pointer; }
+.tl-hit { stroke: transparent; stroke-width: 26; fill: none; }
+.tl-line { stroke: var(--muted); stroke-width: 4; fill: none; stroke-linecap: round; stroke-linejoin: round; transition: stroke .2s, stroke-width .2s; }
+.tl-study .tl-line { stroke-width: 9; }
+.tl-planned { stroke-dasharray: 2 12; }
+.tl-node { fill: var(--surface); stroke: var(--muted); stroke-width: 3; transition: stroke .2s, fill .2s; }
+.tl-branch:hover .tl-line, .tl-branch:hover .tl-node { stroke: var(--ink); }
+.tl-branch.on .tl-line { stroke: var(--accent-display); }
+.tl-branch.on .tl-node { stroke: var(--accent-display); fill: var(--accent-display); }
+.tl-name { fill: var(--accent-text); font: 700 12px var(--mono); }
+.tl-head-line { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 4 5; }
+.tl-head-tag { fill: var(--ink); }
+.tl-head-text { fill: var(--bg); font: 700 11px var(--mono); text-anchor: middle; letter-spacing: .06em; }
+.tl-head-dot { fill: var(--accent-display); animation: pulse 1.6s ease-in-out infinite; }
+
+.tl-tabs { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px 14px; border-bottom: 1px solid var(--border); }
+.tl-tabs:empty { display: none; }
+.tl-tabs button {
+  font: 500 12px var(--mono); color: var(--ink); background: transparent; cursor: pointer;
+  border: 1px solid var(--border); border-radius: 999px; padding: 6px 12px;
+  transition: background .2s, color .2s, border-color .2s;
+}
+.tl-tabs button:hover { border-color: var(--ink); }
+.tl-tabs button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+.tl-entries { list-style: none; margin: 0; padding: 0; }
+.tl-entry { padding: 20px 22px; border-top: 1px solid var(--border); }
+.tl-entry:first-child { border-top: 0; }
+/* With JavaScript, only the picked entry is shown. Without it, all of them are. */
+.tl.is-live .tl-entry { display: none; border-top: 0; }
+.tl.is-live .tl-entry.on { display: block; animation: tl-in .35s ease both; }
+@keyframes tl-in { from { opacity: 0; transform: translateY(8px); } }
+.tl-when { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--accent-text); }
+.tl-entry h3 { font: 800 clamp(20px, 2.6vw, 28px) var(--display); letter-spacing: -0.02em; margin: 6px 0 8px; }
+.tl-entry h3 span { font-weight: 500; color: var(--muted); font-size: .72em; letter-spacing: 0; }
+.tl-entry > p { color: var(--muted); font-size: 15.5px; max-width: 74ch; }
+.tl-entry ul { margin: 10px 0 0; padding-left: 18px; color: var(--muted); font-size: 15px; max-width: 74ch; display: grid; gap: 6px; }
+.tl-entry ul strong { color: var(--ink); font-weight: 600; }
+.tl-entry .tl-meta { margin-top: 12px; font-size: 12.5px; }
 
 /* ---------- Skills ---------- */
 .skills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
@@ -576,7 +621,7 @@ h2 em { font-style: normal; color: var(--accent-display); }
   .hero { padding-top: 44px; }
   .stats { grid-template-columns: 1fr; gap: 12px; }
   .skills { grid-template-columns: 1fr; }
-  .timeline li { grid-template-columns: 1fr; gap: 4px; }
+  .tl-entry.on, .tl:not(.is-live) .tl-entry { padding: 16px; }
   .card { padding: 22px; }
   .btn { padding: 12px 18px; }
 }
