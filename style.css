@@ -429,6 +429,8 @@ h2 em { font-style: normal; color: var(--accent-display); }
 .tl-line { stroke: var(--muted); stroke-width: 4; fill: none; stroke-linecap: round; stroke-linejoin: round; transition: stroke .2s, stroke-width .2s; }
 .tl-study .tl-line { stroke-width: 9; }
 .tl-planned { stroke-dasharray: 2 12; }
+.tl-branch .tl-stem { stroke-width: 2.5; }
+circle.tl-hit { fill: transparent; stroke: none; } /* click area around a tag marker */
 .tl-node { fill: var(--surface); stroke: var(--muted); stroke-width: 3; transition: stroke .2s, fill .2s; }
 .tl-branch:hover .tl-line, .tl-branch:hover .tl-node { stroke: var(--ink); }
 .tl-branch.on .tl-line { stroke: var(--accent-display); }
@@ -455,7 +457,8 @@ h2 em { font-style: normal; color: var(--accent-display); }
 /* With JavaScript, only the picked entry is shown. Without it, all of them are. */
 .tl.is-live .tl-entry { display: none; border-top: 0; }
 .tl.is-live .tl-entry.on { display: block; animation: tl-in .35s ease both; }
-@keyframes tl-in { from { opacity: 0; transform: translateY(8px); } }
+/* Slide only, no fade: the text must stay readable even if animations are paused. */
+@keyframes tl-in { from { transform: translateY(8px); } }
 .tl-when { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--accent-text); }
 .tl-entry h3 { font: 800 clamp(20px, 2.6vw, 28px) var(--display); letter-spacing: -0.02em; margin: 6px 0 8px; }
 .tl-entry h3 span { font-weight: 500; color: var(--muted); font-size: .72em; letter-spacing: 0; }

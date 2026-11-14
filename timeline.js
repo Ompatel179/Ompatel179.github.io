@@ -2,7 +2,8 @@
 //
 // The idea: study runs along the bottom "main" line. Internships, research
 // and the current job are branches that fork off above it and merge back
-// when they end. A dashed "HEAD" line marks today.
+// when they end. A one-off event (the IEEE paper) is a tag: a diamond on a
+// short stem. A dashed "HEAD" line marks today.
 //
 // The entries themselves live in index.html as a normal list. This script
 // reads their dates from data-start / data-end, draws the graph as an SVG,
@@ -39,20 +40,21 @@
 
   /* ---------- Rows of the graph ---------- */
   const MAIN_Y = 186;   // study runs along here
-  const LANE_A = 132;   // internships, research, current job
-  const LANE_B = 84;    // a second lane, for things that overlap lane A
+  const LANE_A = 112;   // internships, research, current job
+  const TAG_Y = 150;    // height of a tag marker (a one-off event, like a paper)
   const CURVE = 16;     // width of a fork / merge curve
 
   // How each entry connects to the rest of the graph.
   //   lane:  which row it runs along
-  //   from:  the row it forks from (null = it continues an earlier branch)
+  //   from:  the row it forks from
   //   to:    the row it merges into when it ends (null = still open)
+  //   tag:   a single moment, drawn as a diamond on a short stem (like a git tag)
   const shape = {
     btech:   { lane: MAIN_Y },
     ms:      { lane: MAIN_Y },
     candore: { lane: LANE_A, from: MAIN_Y, to: MAIN_Y },
-    srgan:   { lane: LANE_B, from: LANE_A, to: LANE_A },  // forks from the internship's branch
-    unet:    { lane: LANE_A, from: null, to: MAIN_Y },    // continues where srgan lands
+    unet:    { lane: LANE_A, from: MAIN_Y, to: MAIN_Y },
+    paper:   { lane: MAIN_Y, tag: true },
     ces:     { lane: LANE_A, from: MAIN_Y, to: null },
   };
 
@@ -66,13 +68,16 @@
              start, end, open, x0: xOf(start), x1: xOf(end), ...shape[li.dataset.id] };
   });
 
-  // "5 mo", "4 yr", "1 yr 9 mo"
+  // "5 mo", "1 yr 9 mo", "4 yr". Long stretches are rounded to whole years,
+  // so a four-year degree reads "4 yr" and not "4 yr 1 mo".
   const lengthText = (months) => {
     const m = Math.max(1, Math.round(months));
+    if (m >= 36) return `${Math.round(m / 12)} yr`;
     const y = Math.floor(m / 12), r = m % 12;
     return [y ? `${y} yr` : '', r ? `${r} mo` : ''].filter(Boolean).join(' ');
   };
   entries.forEach((e) => {
+    if (e.tag) { e.x1 = e.x0; return; }               // a single moment has no length
     const when = e.li.querySelector('.tl-when');
     const total = lengthText(e.end - e.start);
     let note = total;
@@ -113,6 +118,15 @@
 
   entries.forEach((e) => {
     const g = el('g', { class: `tl-branch tl-${e.kind}`, 'data-id': e.id, tabindex: -1 }, drawn);
+    e.g = g;
+    g.addEventListener('click', () => select(e.id, true));
+    if (e.tag) {
+      // A tag: a short stem up from the main line with a diamond on top.
+      el('circle', { cx: e.x0, cy: TAG_Y, r: 18, class: 'tl-hit' }, g);
+      el('path', { d: `M${e.x0} ${MAIN_Y} V${TAG_Y + 9}`, class: 'tl-line tl-stem' }, g);
+      el('path', { d: `M${e.x0} ${TAG_Y - 9} l9 9 l-9 9 l-9 -9 Z`, class: 'tl-node' }, g);
+      return;
+    }
     let d;
     if (e.lane === MAIN_Y) {
       // Study: a thick stretch of the main line. Anything after today is dashed.
@@ -122,11 +136,8 @@
         el('path', { d: `M${NOW_X + 10} ${MAIN_Y} H${e.x1}`, class: 'tl-line tl-planned' }, g);
       }
     } else {
-      // from == null means "continue the previous branch": start where its
-      // merge curve lands, which is one curve-width after this entry's date.
-      if (e.from == null) e.x0 += CURVE;
-      d = e.from == null ? `M${e.x0} ${e.lane}`
-        : `M${e.x0 - CURVE} ${e.from} ${sCurve(e.x0 - CURVE, e.from, e.x0, e.lane)}`;
+      // A branch: fork up from the main line, run along its lane, merge back.
+      d = `M${e.x0 - CURVE} ${e.from} ${sCurve(e.x0 - CURVE, e.from, e.x0, e.lane)}`;
       d += ` H${e.x1}`;
       if (e.to != null) d += ` ${sCurve(e.x1, e.lane, e.x1 + CURVE, e.to)}`;
     }
@@ -135,8 +146,6 @@
     // A dot at each end of the entry.
     el('circle', { cx: e.x0, cy: e.lane, r: 5.5, class: 'tl-node' }, g);
     el('circle', { cx: Math.min(e.x1, e.lane === MAIN_Y ? NOW_X : e.x1), cy: e.lane, r: 5.5, class: 'tl-node' }, g);
-    e.g = g;
-    g.addEventListener('click', () => select(e.id, true));
   });
 
   // The name of the picked branch, shown above it.
