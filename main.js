@@ -40,7 +40,9 @@
     gsap.ticker.lagSmoothing(0);
   }
   // Nav links (#work, #contact...) scroll smoothly too.
-  document.querySelectorAll('a[href^="#"]').forEach((a) => {
+  // (#emailLink is left out: its "#contact" is only a placeholder until the
+  // email address is filled in, see the email button code further down.)
+  document.querySelectorAll('a[href^="#"]:not(#emailLink)').forEach((a) => {
     a.addEventListener('click', (e) => {
       const target = document.querySelector(a.getAttribute('href'));
       if (!target) return;
@@ -283,6 +285,24 @@
         });
       });
     }
+  }
+
+  /* ---------- Email button: build the address only when a person needs it ---------- */
+  // The HTML holds the address in two reversed pieces and no "mailto:", so
+  // simple email-harvesting bots that read the page find nothing. The real
+  // link is assembled the first time someone points at, tabs to or taps it.
+  const emailLink = document.getElementById('emailLink');
+  if (emailLink) {
+    const reveal = () => {
+      if (emailLink.dataset.ready) return;
+      const flip = (s) => s.split('').reverse().join('');
+      emailLink.href = 'mailto:' + flip(emailLink.dataset.u) + '@' + flip(emailLink.dataset.d);
+      emailLink.dataset.ready = '1';
+    };
+    ['pointerenter', 'focus', 'touchstart'].forEach((ev) =>
+      emailLink.addEventListener(ev, reveal, { passive: true }));
+    // Clicking also works on its own (e.g. a click with no hover first).
+    emailLink.addEventListener('click', reveal);
   }
 
   document.getElementById('year').textContent = new Date().getFullYear();

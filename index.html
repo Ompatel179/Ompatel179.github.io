@@ -444,7 +444,12 @@
       <h2>Let's <em>talk.</em></h2>
       <p>I'm happy to talk about ML systems, backend performance, or a role you think I'd fit. Open to full-time, part-time or internship roles starting May 2027.</p>
       <div class="cta">
-        <a class="btn primary" href="mailto:omnpatel179@gmail.com">omnpatel179@gmail.com</a>
+        <!-- The address is not written here, so bots that scan the page for
+             emails can't find it. main.js puts it together from the two
+             reversed pieces only when someone points at, tabs to or clicks
+             the button. -->
+        <a class="btn primary" id="emailLink" href="#contact" data-u="971letapnmo" data-d="moc.liamg">Email ↗</a>
+        <noscript><span class="mono small">omnpatel179 [at] gmail [dot] com</span></noscript>
         <a class="btn ghost" href="https://www.linkedin.com/in/op179/" target="_blank" rel="noopener">LinkedIn ↗</a>
         <a class="btn ghost" href="https://github.com/Ompatel179" target="_blank" rel="noopener">GitHub ↗</a>
       </div>
